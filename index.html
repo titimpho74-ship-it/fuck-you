@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>3D Rotating Heart</title>
+<style>
+body {
+margin: 0;
+background: black;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+}
+canvas {
+width: 500px;
+height: 500px;
+}
+</style>
+</head>
+<body>
+<canvas id="heart"></canvas>
+<script>
+const canvas = document.getElementById("heart");
+const ctx = canvas.getContext("2d");
+canvas.width = 500;
+canvas.height = 500;
+let angle = 0;
+function drawHeart() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+const points = [];
+for (let u = 0; u < Math.PI * 2; u += 0.08) {
+for (let v = 0; v < Math.PI; v += 0.08) {
+let x = 16 * Math.pow(Math.sin(v), 3) * Math.cos(u);
+let y = (13 * Math.cos(v) - 5 * Math.cos(2 * v) - 2 * Math.cos(3 * v) - Math.cos(4 * v)) * Math.sin(u);
+let z = (13 * Math.cos(v) - 5 * Math.cos(2 * v) - 2 * Math.cos(3 * v) - Math.cos(4 * v)) * Math.cos(u);
+let rotatedX = x * Math.cos(angle) - z * Math.sin(angle);
+let rotatedZ = x * Math.sin(angle) + z * Math.cos(angle);
+let scale = 300 / (300 + rotatedZ * 8);
+let screenX = rotatedX * scale + 250;
+let screenY = -y * scale + 250;
+points.push({x: screenX, y: screenY, z: rotatedZ});
+}
+}
+points.forEach(point => {
+let size = 2 + point.z * 0.03;
+ctx.beginPath();
+ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+ctx.fillStyle = "red";
+ctx.fill();
+});
+angle += 0.02;
+requestAnimationFrame(drawHeart);
+}
+drawHeart();
+</script>
+</body>
+</html>
